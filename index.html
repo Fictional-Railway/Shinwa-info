@@ -9,8 +9,10 @@
 <body>
     <header id="header">
         <div class="header-inner">
+            <a class="header-a" href="/index.html">
             <h1>若狭県 防災・安全情報ポータルサイト 「S.H.N.WA.」</h1>
-            <p class="subtitle">(Wakasa Safety & Hazard Network System)</p>
+            <p class="subtitle">(Safety & Hazard Infomation Network Of Wakasa)</p>
+            </a>
         </div>
     </header>
 
@@ -36,7 +38,8 @@
                 <p class="current-time"></p> 
                 <div class="alert-box primary-alert">
                     <p class="alert-title">【現在、避難情報の発令はありません】</p>
-                    <p>若狭北部：強風注意報・波浪注意報発令中。南部：発表なし。</p>
+                    <p>若狭県北部：強風注意報・波浪注意報発令中。</p>
+                    <p>若狭県南部：発表なし。</p>
                     <a href="#" class="btn-detail">▶ 全ての警報・注意報を確認する</a>
                 </div>
             </section>
@@ -53,12 +56,15 @@
                 <div class="tab-content-container">
                     <div id="weather-content" class="tab-content active">
                         <p class="tab-description">現在、若狭県内で発表されている気象情報、および災害に関する最新情報をお伝えします。</p>
+                        <p style="color: brown;">※現在最大震度3程度の地震が県内において多発しております。今後の情報に注意してください。</p>
                         <ul class="announcement-list">
-                            <li><span class="date">12/12 14:15</span> 【気象】北部沿岸地域に強風注意報が発表されました。</li>
-                            <li><span class="date">12/10 08:00</span> 【河川】冬期に入り、河川水位は安定しています。</li>
-                            <li><span class="date">11/25 17:00</span> 【避難】全県避難訓練「Operation W」が無事終了しました。</li>
+                            <a class="a-a" href="./earthquake.html">
+                            <li><span class="date">12/10 18:23</span> 【お詫び】災害メールの誤植について</li>
+                            <li><span class="date">12/12 17:59</span> 【地震】若狭県沖にて最大震度3の地震が発生しました。津波の心配はありません。</li>
+                            <li><span class="date">11/25 16:12</span> 【地震】若狭県沖にて最大震度2の地震が発生しました。津波の心配はありません。</li>
+                        </a>
                         </ul>
-                        <a href="#" class="btn-full-list">▶ 気象・災害情報の一覧を見る</a>
+                        <a href="./earthquake.html" class="btn-full-list">▶ 気象・災害情報の一覧を見る</a>
                     </div>
 
                     <div id="security-content" class="tab-content">

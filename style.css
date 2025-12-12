@@ -1,6 +1,8 @@
 /* ================================
    1. リセット/基本スタイル
    ================================ */
+
+
 body {
     font-family: 'メイリオ', Meiryo, '游ゴシック', YuGothic, sans-serif;
     line-height: 1.6;
@@ -499,4 +501,29 @@ a:hover {
 } 
 .font-large { 
     font-size: 18px; /* 大きいサイズ */
+}
+
+.notice {
+        padding: 8px 0;
+    border-bottom: 1px dotted #eee;
+}
+
+.a-a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.a-a:hover {
+    text-decoration: none;
+    color: #333;
+}
+
+.header-a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.header-a:hover {
+    text-decoration: none;
+    color: white;
 }
