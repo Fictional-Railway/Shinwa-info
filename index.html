@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>若狭県 防災・安全情報ポータルサイト 「S.H.N.WA.」</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header id="header">
+        <div class="header-inner">
+            <h1>若狭県 防災・安全情報ポータルサイト 「S.H.N.WA.」</h1>
+            <p class="subtitle">(Wakasa Safety & Hazard Network System)</p>
+        </div>
+    </header>
+
+    <div id="utility-bar">
+        <div class="utility-inner">
+            <div class="accessibility">
+                <span>【文字サイズ】</span>
+                <button class="font-size-btn" data-size="small">小</button>
+                <button class="font-size-btn active" data-size="medium">中</button>
+                <button class="font-size-btn" data-size="large">大</button>
+            </div>
+            <div class="language">
+                <a href="#">English</a> | <a href="#">中文</a>
+            </div>
+        </div>
+    </div>
+
+    <main id="main-content">
+        <div class="container">
+            
+            <section class="alert-section">
+                <h2>⚠️ 緊急・重要なお知らせ</h2>
+                <p class="current-time"></p> 
+                <div class="alert-box primary-alert">
+                    <p class="alert-title">【現在、避難情報の発令はありません】</p>
+                    <p>若狭北部：強風注意報・波浪注意報発令中。南部：発表なし。</p>
+                    <a href="#" class="btn-detail">▶ 全ての警報・注意報を確認する</a>
+                </div>
+            </section>
+
+            <section class="tabbed-category-section">
+                <h2>■ 分野別お知らせ一覧</h2>
+
+                <div class="tab-list">
+                    <button class="tab-btn active" data-category="weather">気象・災害</button>
+                    <button class="tab-btn" data-category="security">防犯・交通</button>
+                    <button class="tab-btn" data-category="utility">ライフライン・医療</button>
+                </div>
+
+                <div class="tab-content-container">
+                    <div id="weather-content" class="tab-content active">
+                        <p class="tab-description">現在、若狭県内で発表されている気象情報、および災害に関する最新情報をお伝えします。</p>
+                        <ul class="announcement-list">
+                            <li><span class="date">12/12 14:15</span> 【気象】北部沿岸地域に強風注意報が発表されました。</li>
+                            <li><span class="date">12/10 08:00</span> 【河川】冬期に入り、河川水位は安定しています。</li>
+                            <li><span class="date">11/25 17:00</span> 【避難】全県避難訓練「Operation W」が無事終了しました。</li>
+                        </ul>
+                        <a href="#" class="btn-full-list">▶ 気象・災害情報の一覧を見る</a>
+                    </div>
+
+                    <div id="security-content" class="tab-content">
+                        <p class="tab-description">県警本部・交通管制センターからの防犯情報、および交通規制情報です。</p>
+                        <ul class="announcement-list">
+                            <li><span class="date">12/12 16:30</span> 【防犯】還付金詐欺のアポ電が多発しています。十分にご注意ください。</li>
+                            <li><span class="date">12/11 11:00</span> 【交通】県道51号線で積雪による一部通行止めが発生しています。</li>
+                            <li><span class="date">12/05 09:30</span> 【鳥獣】若狭町でクマの目撃情報が続いています。</li>
+                        </ul>
+                        <a href="#" class="btn-full-list">▶ 防犯・交通情報の一覧を見る</a>
+                    </div>
+
+                    <div id="utility-content" class="tab-content">
+                        <p class="tab-description">停電、断水、公共交通機関の運行状況、休日夜間当番医の情報です。</p>
+                        <ul class="announcement-list">
+                            <li><span class="date">12/12 17:00</span> 【医療】本日（12/12）の夜間当番医は県立若狭病院です。</li>
+                            <li><span class="date">12/01 10:00</span> 【水道】冬期の水道管凍結防止に関するお知らせ。</li>
+                            <li><span class="date">11/20 07:30</span> 【交通】JR若狭線は平常通り運行しています。</li>
+                        </ul>
+                        <a href="#" class="btn-full-list">▶ ライフライン・医療情報の一覧を見る</a>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="register-section">
+                <h2>📩 若狭県防災メール・LINE 公式アカウント</h2>
+                <div class="register-box">
+                    <p>緊急速報や地域ごとの安全情報を、登録いただいたツールへ配信します。</p>
+                    <div class="register-buttons">
+                        <a href="#" class="btn-large btn-email">メールで登録</a>
+                        <a href="#" class="btn-large btn-line">LINEで友だち登録</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="link-section">
+                <h2>🔗 関連リンク</h2>
+                <ul class="link-list">
+                    <li><a href="#">若狭県庁トップページ</a></li>
+                    <li><a href="#">気象庁・国土交通省</a></li>
+                    <li><a href="#">若狭県警察本部</a></li>
+                    <li><a href="#">県民生活相談窓口</a></li>
+                </ul>
+            </section>
+
+        </div>
+    </main>
+
+    <footer id="footer">
+        <div class="container">
+            <address>
+                <strong>若狭県 危機管理部 消防保安課</strong><br>
+                〒91X-XXXX 若狭県若狭市中央1-1 / 電話：0770-XX-XXXX（代表）
+            </address>
+            <p class="copyright">
+                (C) Wakasa Prefecture. All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,502 @@
+/* ================================
+   1. リセット/基本スタイル
+   ================================ */
+body {
+    font-family: 'メイリオ', Meiryo, '游ゴシック', YuGothic, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    background-color: #f4f4f9; /* やや青みがかった白 */
+    font-size: 16px; /* 初期値（中サイズ） */
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.container {
+    width: 95%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+/* ================================
+   2. ヘッダー/ユーティリティバー
+   ================================ */
+
+#header {
+    background-color: #0056b3; /* 濃い青 */
+    color: white;
+    padding: 15px 0;
+}
+
+.header-inner {
+    width: 95%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+#header h1 {
+    font-size: 1.8em;
+    margin: 0;
+    border-left: 5px solid #ffcc00; /* アクセントカラーの黄色 */
+    padding-left: 10px;
+}
+
+#header .subtitle {
+    margin: 5px 0 0 0;
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+#utility-bar {
+    background-color: #e9ecef; /* 薄いグレー */
+    border-bottom: 1px solid #ccc;
+    padding: 8px 0;
+}
+
+.utility-inner {
+    width: 95%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-end; /* 右寄せ */
+    align-items: center;
+}
+
+.accessibility, .language {
+    font-size: 0.9em;
+    margin-left: 20px;
+}
+
+.font-size-btn {
+    padding: 3px 8px;
+    border: 1px solid #ccc;
+    background-color: white;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.font-size-btn.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    font-weight: bold;
+}
+
+/* ================================
+   3. メインコンテンツのレイアウト
+   ================================ */
+
+#main-content h2 {
+    font-size: 1.4em;
+    color: #0056b3;
+    border-left: 6px solid #ffcc00;
+    padding-left: 10px;
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+.main-body {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.category-section {
+    flex: 1 1 100%; /* スマホでは全幅 */
+    min-width: 300px;
+}
+
+.news-section {
+    flex: 2 1 60%; /* PCで左側のメインエリア */
+    min-width: 450px;
+}
+
+.side-content {
+    flex: 1 1 30%; /* PCで右側のサイドバー */
+    min-width: 280px;
+}
+
+/* PC以上の画面サイズでレイアウト変更 */
+@media (min-width: 768px) {
+    .category-section {
+        flex: 1 1 100%; /* 横並びにするため一度100%に */
+        order: 2;
+    }
+    .news-section {
+        order: 1;
+        flex: 2 1 auto;
+    }
+    .side-content {
+        order: 3;
+        flex: 1 1 auto;
+    }
+    .main-body {
+        flex-direction: row; /* 横並びに戻す */
+    }
+}
+
+/* ================================
+   4. 各セクションのスタイル
+   ================================ */
+
+/* 警告セクション */
+.alert-section {
+    background-color: #fff3cd; /* 薄い黄色 */
+    border: 1px solid #ffc107; /* 濃い黄色 */
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 5px;
+}
+
+.alert-box {
+    padding: 10px;
+    background-color: #fff8e1;
+    border-left: 5px solid #ffc107;
+    margin-top: 10px;
+}
+
+.alert-box ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 5px 0;
+}
+
+.alert-box .note {
+    font-size: 0.9em;
+    color: #856404;
+    margin-top: 10px;
+}
+
+/* マップボタン */
+.map-button {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background-color: #dc3545; /* 赤色（危険） */
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.1em;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s;
+}
+
+.map-button:hover {
+    background-color: #c82333;
+    text-decoration: none;
+}
+
+.map-description {
+    font-size: 0.9em;
+    text-align: center;
+    color: #666;
+}
+
+/* カテゴリグリッド */
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+}
+
+.category-item {
+    background-color: white;
+    padding: 15px;
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.category-item h3 {
+    margin-top: 0;
+    font-size: 1.1em;
+    padding-bottom: 5px;
+    border-bottom: 2px dotted #ccc;
+}
+
+.category-item ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.category-item li {
+    padding: 3px 0;
+}
+
+/* 新着情報 */
+.news-list {
+    margin: 0;
+    padding: 0;
+    background-color: white;
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.news-list dt {
+    font-weight: bold;
+    color: #0056b3;
+    float: left;
+    margin-right: 10px;
+    width: 80px;
+    clear: both;
+    font-size: 0.9em;
+}
+
+.news-list dd {
+    margin-left: 90px;
+    border-bottom: 1px dotted #ccc;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    font-size: 0.95em;
+}
+
+.news-list dd:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+.news-tag {
+    display: inline-block;
+    color: white;
+    padding: 2px 6px;
+    margin-right: 5px;
+    border-radius: 3px;
+    font-size: 0.8em;
+}
+.type-defense { background-color: #007bff; } /* 青 */
+.type-weather { background-color: #ffc107; color: #333; } /* 黄 */
+.type-animal { background-color: #28a745; } /* 緑 */
+.type-info { background-color: #6c757d; } /* グレー */
+
+/* サイドコンテンツ */
+.side-content section {
+    background-color: white;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.btn-register {
+    display: block;
+    background-color: #28a745; /* 緑色 */
+    color: white;
+    padding: 10px;
+    text-align: center;
+    border-radius: 4px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.sub-link {
+    text-align: center;
+    margin-top: 5px;
+    font-size: 0.9em;
+}
+
+.doctor-list dt {
+    font-weight: bold;
+    color: #dc3545;
+    margin-top: 10px;
+}
+.doctor-list dd {
+    margin-left: 0;
+    padding-left: 10px;
+    border-left: 3px solid #f8d7da;
+    margin-bottom: 5px;
+}
+
+/* 関連リンク */
+.link-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-top: 1px solid #ccc;
+    padding-top: 20px;
+}
+
+.link-list li {
+    background-color: #e9ecef;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9em;
+}
+
+.link-list a {
+    color: #333;
+}
+
+/* ================================
+   5. フッター
+   ================================ */
+#footer {
+    background-color: #343a40; /* 濃いグレー */
+    color: white;
+    padding: 20px 0;
+    margin-top: 40px;
+    font-size: 0.9em;
+}
+
+#footer address {
+    font-style: normal;
+    margin-bottom: 10px;
+}
+
+.copyright {
+    text-align: right;
+    opacity: 0.7;
+}
+
+/* ================================
+   既存のCSSはそのまま残し、以下を追記・上書き
+   ================================ */
+
+/* ---------------------------------
+   タブ式カテゴリセクション (2. 分野別お知らせ一覧)
+   --------------------------------- */
+.tabbed-category-section {
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #ccc;
+}
+
+.tabbed-category-section h2 {
+    /* 既存のh2スタイルを流用 */
+    margin-bottom: 0;
+}
+
+/* タブボタンのリスト */
+.tab-list {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    border-bottom: 3px solid #0056b3; /* 全体を支える青いライン */
+}
+
+/* タブボタン個別のスタイル */
+.tab-btn {
+    flex-grow: 1; /* 横幅を均等にする */
+    background-color: #e9ecef; /* 非アクティブ時の背景 */
+    color: #333;
+    border: none;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 12px 10px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    margin-right: 1px; /* ボタン同士をわずかに離す */
+}
+.tab-btn:last-child {
+    margin-right: 0;
+}
+
+/* アクティブなタブのスタイル */
+.tab-btn.active {
+    background-color: #0056b3; /* ヘッダーと同じ青 */
+    color: white;
+    border-bottom: 3px solid white; /* 下線を白で上書きして浮き上がらせる */
+}
+.tab-btn:not(.active):hover {
+    background-color: #d0d4d8;
+}
+
+/* タブコンテンツのコンテナ */
+.tab-content-container {
+    background-color: white;
+    padding: 15px;
+    border: 1px solid #0056b3; /* タブと同じ青の境界線 */
+    border-top: none; /* タブリストと一体化させる */
+}
+
+/* タブコンテンツ個別のスタイル */
+.tab-content {
+    display: none; /* 初期状態では非表示 */
+}
+.tab-content.active {
+    display: block; /* activeクラスが付いたら表示 */
+}
+
+.tab-description {
+    font-size: 0.9em;
+    color: #666;
+    padding-bottom: 10px;
+    border-bottom: 1px dotted #ccc;
+}
+
+/* お知らせリスト */
+.announcement-list {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+}
+.announcement-list li {
+    padding: 8px 0;
+    border-bottom: 1px dotted #eee;
+}
+.announcement-list .date {
+    font-weight: bold;
+    color: #0056b3;
+    margin-right: 8px;
+    font-size: 0.95em;
+}
+
+.btn-full-list {
+    display: block;
+    text-align: right;
+    font-size: 0.9em;
+    color: #dc3545; /* 赤色で目立たせる */
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* スマホ対応（タブボタン） */
+@media (max-width: 600px) {
+    .tab-list {
+        flex-direction: column; /* 縦並びにする */
+        border-bottom: none;
+    }
+    .tab-btn {
+        margin-right: 0;
+        margin-bottom: 1px;
+        border-radius: 0;
+        border-bottom: 1px solid #ccc;
+    }
+    .tab-btn.active {
+        border-left: 5px solid #ffcc00; /* アクティブなタブを左側にラインで強調 */
+        border-bottom: 1px solid #ccc;
+    }
+    .tab-content-container {
+        border-top: 1px solid #0056b3;
+    }
+}
+
+/* style.css の基本スタイルに追加 */
+
+/* JSで制御する文字サイズクラス */
+.font-small { 
+    font-size: 14px; /* 小さいサイズ */
+}
+.font-medium { 
+    font-size: 16px; /* 標準サイズ */
+} 
+.font-large { 
+    font-size: 18px; /* 大きいサイズ */
+}
