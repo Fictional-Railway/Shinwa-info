@@ -43,7 +43,7 @@ body.high-contrast a {
 
 /* 枠組み・レイアウト */
 .container {
-    width: 960px;
+    width: 90%;
     margin: 0 auto;
     background-color: #ffffff;
     border-left: 1px solid #cccccc;
