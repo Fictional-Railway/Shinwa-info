@@ -12,6 +12,7 @@ body {
     color: #333333;
     font-size: 14px;
     line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
 }
 
 /* 文字サイズ変更対応 */
