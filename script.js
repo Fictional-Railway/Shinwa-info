@@ -85,20 +85,19 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-    
-    // --- (1〜4の既存コードはそのまま) ---
 
-    // 5. 気象庁APIから福井県嶺南（若狭地域）の実データを取得する処理
-    const REINAN_AREA_CODE = "180020"; // 気象庁エリアコード：福井県嶺南（若狭）
+    // 気象庁エリアコード設定
+    const AREA_REIHOKU = "180010"; // 福井県嶺北（県北部・越前町等）
+    const AREA_REINAN  = "180020"; // 福井県嶺南（県南部・若狭等）
 
-    async function fetchReinanWeatherWarnings() {
+    async function fetchFukuiWeatherWarnings() {
         const statusBody = document.getElementById('weather-status-body');
         const updateTimeElem = document.getElementById('status-update-time');
 
         if (!statusBody) return;
 
         try {
-            // 気象庁 防災情報XML/JSON API（防災警報・注意報データ）
+            // 気象庁 防災情報JSON API（福井県全体: 180000）
             const response = await fetch('https://www.jma.go.jp/bosai/warning/data/warning/180000.json');
             
             if (!response.ok) {
@@ -107,74 +106,43 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const data = await response.json();
 
-            // 福井県嶺南（若狭）エリアのデータ抽出
-            let reinanData = null;
-            if (data && data.areaTypes) {
-                for (const areaType of data.areaTypes) {
-                    if (areaType.areas) {
-                        const found = areaType.areas.find(a => a.code === REINAN_AREA_CODE);
-                        if (found) {
-                            reinanData = found;
-                            break;
-                        }
-                    }
-                }
-            }
+            // 嶺北・嶺南それぞれのデータ抽出処理
+            const reihokuData = extractAreaData(data, AREA_REIHOKU);
+            const reinanData  = extractAreaData(data, AREA_REINAN);
 
-            // 発表されている警報・注意報コードの配列を取得
-            const warningCodes = reinanData && reinanData.warnings 
-                ? reinanData.warnings.map(w => w.code) 
-                : [];
+            // それぞれの警報・注意報を解析
+            const reihokuStatus = parseWarnings(reihokuData);
+            const reinanStatus  = parseWarnings(reinanData);
 
-            // 気象庁警報・注意報コードの判定ロジック
-            const specialWarnings = []; // 特別警報 (30番台など)
-            const warnings = [];        // 警報 (10番台)
-            const advisories = [];      // 注意報 (20番台)
-            let hasLandslideAlert = false; // 土砂災害警戒情報
-
-            if (reinanData && reinanData.warnings) {
-                reinanData.warnings.forEach(w => {
-                    // statusが "発表" または "継続" のもののみ対象
-                    if (w.status === "発表" || w.status === "継続") {
-                        const code = parseInt(w.code, 10);
-                        const name = getWarningName(code);
-
-                        if (code === 50) { // 土砂災害警戒情報
-                            hasLandslideAlert = true;
-                        } else if (code >= 30 && code < 40) {
-                            specialWarnings.push(name);
-                        } else if (code >= 10 && code < 20) {
-                            warnings.push(name);
-                        } else if (code >= 20 && code < 30) {
-                            advisories.push(name);
-                        }
-                    }
-                });
-            }
-
-            // HTMLテーブル生成
+            // テーブル表示の更新
             statusBody.innerHTML = `
                 <tr>
                     <th>特別警報</th>
-                    <td>${formatStatusList(specialWarnings, 'danger')}</td>
+                    <td>${formatStatusList(reihokuStatus.special, 'danger')}</td>
+                    <td>${formatStatusList(reinanStatus.special, 'danger')}</td>
                 </tr>
                 <tr>
                     <th>警報</th>
-                    <td>${formatStatusList(warnings, 'warning')}</td>
+                    <td>${formatStatusList(reihokuStatus.warning, 'warning')}</td>
+                    <td>${formatStatusList(reinanStatus.warning, 'warning')}</td>
                 </tr>
                 <tr>
                     <th>注意報</th>
-                    <td>${formatStatusList(advisories, 'info')}</td>
+                    <td>${formatStatusList(reihokuStatus.advisory, 'info')}</td>
+                    <td>${formatStatusList(reinanStatus.advisory, 'info')}</td>
                 </tr>
                 <tr>
                     <th>土砂災害警戒情報</th>
-                    <td>${hasLandslideAlert 
+                    <td>${reihokuStatus.landslide 
+                        ? '<span class="status-warning">発表中</span>' 
+                        : '<span class="status-none">発表なし</span>'}</td>
+                    <td>${reinanStatus.landslide 
                         ? '<span class="status-warning">発表中</span>' 
                         : '<span class="status-none">発表なし</span>'}</td>
                 </tr>
             `;
 
-            // 発表日時の反映
+            // 発表日時反映
             if (data.reportDatetime && updateTimeElem) {
                 const reportDate = new Date(data.reportDatetime);
                 const year = reportDate.getFullYear();
@@ -190,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Weather API Error:', error);
             statusBody.innerHTML = `
                 <tr>
-                    <td colspan="2" style="color: red; text-align: center;">
+                    <td colspan="3" style="color: red; text-align: center;">
                         気象情報の取得に失敗しました。（${error.message}）
                     </td>
                 </tr>
@@ -198,7 +166,49 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // 警報名フォーマット用関数
+    // エリアコードに該当する領域データを検索・抽出する補助関数
+    function extractAreaData(data, targetAreaCode) {
+        if (!data || !data.areaTypes) return null;
+        for (const areaType of data.areaTypes) {
+            if (areaType.areas) {
+                const found = areaType.areas.find(a => a.code === targetAreaCode);
+                if (found) return found;
+            }
+        }
+        return null;
+    }
+
+    // 警報・注意報配列を分類整理する補助関数
+    function parseWarnings(areaData) {
+        const result = {
+            special: [],
+            warning: [],
+            advisory: [],
+            landslide: false
+        };
+
+        if (areaData && areaData.warnings) {
+            areaData.warnings.forEach(w => {
+                if (w.status === "発表" || w.status === "継続") {
+                    const code = parseInt(w.code, 10);
+                    const name = getWarningName(code);
+
+                    if (code === 50) {
+                        result.landslide = true;
+                    } else if (code >= 30 && code < 40) {
+                        result.special.push(name);
+                    } else if (code >= 10 && code < 20) {
+                        result.warning.push(name);
+                    } else if (code >= 20 && code < 30) {
+                        result.advisory.push(name);
+                    }
+                }
+            });
+        }
+        return result;
+    }
+
+    // 警報名フォーマット
     function formatStatusList(list, type) {
         if (!list || list.length === 0) {
             return '<span class="status-none">発表なし</span>';
@@ -207,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return list.map(name => `<span class="${className}">${name}</span>`).join('、 ');
     }
 
-    // 気象庁 警報・注意報コードテーブル（代表的なもの）
+    // 気象庁 警報・注意報コード変換
     function getWarningName(code) {
         const names = {
             10: '大雨警報', 12: '大雪警報', 13: '暴風警報', 14: '暴風雪警報', 15: '波浪警報', 16: '高潮警報', 17: '洪水警報',
@@ -218,14 +228,14 @@ document.addEventListener('DOMContentLoaded', function() {
         return names[code] || `警報/注意報(${code})`;
     }
 
-    // 初期呼び出し
-    fetchReinanWeatherWarnings();
+    // 初回呼び出し
+    fetchFukuiWeatherWarnings();
 
     // 更新ボタンイベント
     const btnRefresh = document.getElementById('btn-refresh');
     if (btnRefresh) {
         btnRefresh.addEventListener('click', function() {
-            fetchReinanWeatherWarnings();
+            fetchFukuiWeatherWarnings();
             alert('気象情報を最新状態に更新しました。');
         });
     }

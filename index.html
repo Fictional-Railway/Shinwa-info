@@ -85,14 +85,21 @@
         <!-- メインコンテンツエリア -->
         <main class="primary">
             
-            <!-- 気象警報・注意報発表状況 -->
+<!-- 気象警報・注意報発表状況 -->
 <section class="box">
     <h2 class="box-title">県内の気象警報・注意報発表状況</h2>
     <div class="box-body">
         <table class="status-table">
+            <thead>
+                <tr>
+                    <th style="width: 26%;">区分</th>
+                    <th style="width: 37%;">嶺北（県北部／越前町等）</th>
+                    <th style="width: 37%;">嶺南（県南部／若狭等）</th>
+                </tr>
+            </thead>
             <tbody id="weather-status-body">
                 <tr>
-                    <td colspan="2" style="text-align: center; padding: 15px;">気象情報を取得中...</td>
+                    <td colspan="3" style="text-align: center; padding: 15px;">気象情報を取得中...</td>
                 </tr>
             </tbody>
         </table>
