@@ -407,3 +407,76 @@ footer .copyright {
     background-color: white;
     border: white;
 }
+
+
+
+/* スマホ用CSSテスト */
+@media (max-width: 600px) {
+    .container {
+        width: 100%;
+        margin: 0;
+        border-left: none;
+        border-right: none;
+    }
+
+    header {
+        display: block;
+        padding: 12px;
+    }
+
+    .site-title h1 {
+        font-size: 18px;
+    }
+
+    .clock-box {
+        margin-top: 10px;
+        display: inline-block;
+    }
+
+    .main-content {
+        display: block;
+        padding: 10px;
+    }
+
+    .sidebar {
+        margin-top: 15px;
+    }
+
+    .alert-banner {
+        margin: 10px 10px 0 10px;
+    }
+
+    .box-title {
+        font-size: 14px;
+    }
+
+    .box-body {
+        padding: 8px;
+    }
+
+    .news-list li {
+        font-size: 13px;
+    }
+
+    .news-list .date {
+        display: block;
+        margin-bottom: 2px;
+    }
+
+    .news-toggle {
+        display: block;
+        width: 100%;
+        text-align: left;
+        margin-top: 4px;
+    }
+
+    .status-table th,
+    .status-table td {
+        padding: 6px;
+        font-size: 12px;
+    }
+
+    footer {
+        padding: 12px 8px;
+    }
+}
