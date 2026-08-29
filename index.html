@@ -14,22 +14,14 @@
         <span>若狭県 公式防災・安全ポータル</span>
     </div>
 
-    <!-- アクセシビリティ調整パネル（初期状態は非表示） -->
-    <div id="accessibility-panel" class="accessibility-panel style-hidden">
-        <span>【文字サイズ】</span>
-        <button type="button" class="btn-size" data-size="small">小</button>
-        <button type="button" class="btn-size btn-active" data-size="medium">標準</button>
-        <button type="button" class="btn-size" data-size="large">大</button>
-        <span style="margin-left: 15px;">【配色】</span>
-        <button type="button" class="btn-color btn-active" data-color="default">標準</button>
-        <button type="button" class="btn-color" data-color="high-contrast">高コントラスト</button>
-    </div>
-
     <!-- ヘッダー -->
     <header>
-        <div class="site-title">
-            <h1>若狭県 防災・安全情報ネットワーク「S.H.I.N.WA.」</h1>
-            <p>Safety & Hazard Information Network of Wakasa</p>
+        <div class="site-title" style="display: flex; align-items: center; gap: 16px;">
+            <img src="./image/logo.png" alt="" style="width: 55px; height: auto; display: block;">
+            <div>
+                <h1>若狭県 防災・安全情報ネットワーク「S.H.I.N.WA.」</h1>
+                <p>Safety & Hazard Information Network of Wakasa</p>
+            </div>
         </div>
         <div class="clock-box">
             現在日時: <span id="current-clock">----年--月--日 --:--:--</span>
