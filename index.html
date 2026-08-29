@@ -5,6 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>若狭県防災・安全情報システム「S.H.I.N.WA.」 - 若狭県ホームページ</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .news-pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-top: 18px;
+            padding-top: 12px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .news-page-btn {
+            appearance: none;
+            border: 1px solid #b7c9d9;
+            background: #f5f9ff;
+            color: #1d3557;
+            border-radius: 999px;
+            width: 42px;
+            height: 42px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .news-page-btn:hover:not(:disabled) {
+            background: #dfeeff;
+            transform: translateY(-1px);
+        }
+
+        .news-page-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .news-page-indicator {
+            min-width: 70px;
+            text-align: center;
+            font-weight: 700;
+            color: #1d3557;
+            letter-spacing: 0.05em;
+        }
+
+        .news-item.news-page-hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 <body>
 
@@ -768,6 +814,11 @@ S.H.I.N.WA.復活の日はそう遠くないかもしれませんね。<br>
                         </li>
 
                     </ul>
+                    <div class="news-pagination" aria-label="記事ページ切り替え">
+                        <button type="button" class="news-page-btn" id="news-prev" aria-label="前のページ">◀</button>
+                        <span id="news-page-indicator" class="news-page-indicator">1 / 1</span>
+                        <button type="button" class="news-page-btn" id="news-next" aria-label="次のページ">▶</button>
+                    </div>
                 </div>
             </section>
 
@@ -806,5 +857,64 @@ S.H.I.N.WA.復活の日はそう遠くないかもしれませんね。<br>
 </div>
 
 <script src="script.js"></script>
+<script>
+    (function () {
+        const items = Array.from(document.querySelectorAll('.news-item'));
+        const prevBtn = document.getElementById('news-prev');
+        const nextBtn = document.getElementById('news-next');
+        const pageIndicator = document.getElementById('news-page-indicator');
+        const itemsPerPage = 5;
+        const totalPages = Math.max(1, Math.ceil(items.length / itemsPerPage));
+        let currentPage = 1;
+
+        function renderPage() {
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+
+            items.forEach((item, index) => {
+                const shouldShow = index >= start && index < end;
+                item.classList.toggle('news-page-hidden', !shouldShow);
+                item.style.display = shouldShow ? '' : 'none';
+                if (!shouldShow) {
+                    const full = item.querySelector('.news-full');
+                    if (full) full.hidden = true;
+                    const toggle = item.querySelector('.news-toggle');
+                    if (toggle) {
+                        toggle.setAttribute('aria-expanded', 'false');
+                    }
+                }
+            });
+
+            pageIndicator.textContent = currentPage + ' / ' + totalPages;
+            prevBtn.disabled = currentPage <= 1;
+            nextBtn.disabled = currentPage >= totalPages;
+
+            if (totalPages <= 1) {
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+                pageIndicator.textContent = '1 / 1';
+            } else {
+                prevBtn.style.display = '';
+                nextBtn.style.display = '';
+            }
+        }
+
+        prevBtn.addEventListener('click', function () {
+            if (currentPage > 1) {
+                currentPage -= 1;
+                renderPage();
+            }
+        });
+
+        nextBtn.addEventListener('click', function () {
+            if (currentPage < totalPages) {
+                currentPage += 1;
+                renderPage();
+            }
+        });
+
+        renderPage();
+    })();
+</script>
 </body>
 </html>
