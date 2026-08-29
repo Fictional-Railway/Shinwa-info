@@ -3,128 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>若狭県 防災・安全情報ポータルサイト 「S.H.I.N.WA.」</title>
+    <title>若狭県防災・安全情報システム「S.H.I.N.WA」 - 若狭県ホームページ</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header id="header">
-        <div class="header-inner">
-            <a class="header-a" href="/index.html">
-            <h1>若狭県 防災・安全情報ポータルサイト 「S.H.I.N.WA.」</h1>
-            <p class="subtitle">(Safety & Hazard Infomation Network Of Wakasa)</p>
-            </a>
+
+<div class="container">
+    <!-- プレヘッダー -->
+    <div class="pre-header">
+        <span>若狭県 公式防災・安全ポータル</span>
+    </div>
+
+    <!-- アクセシビリティ調整パネル（初期状態は非表示） -->
+    <div id="accessibility-panel" class="accessibility-panel style-hidden">
+        <span>【文字サイズ】</span>
+        <button type="button" class="btn-size" data-size="small">小</button>
+        <button type="button" class="btn-size btn-active" data-size="medium">標準</button>
+        <button type="button" class="btn-size" data-size="large">大</button>
+        <span style="margin-left: 15px;">【配色】</span>
+        <button type="button" class="btn-color btn-active" data-color="default">標準</button>
+        <button type="button" class="btn-color" data-color="high-contrast">高コントラスト</button>
+    </div>
+
+    <!-- ヘッダー -->
+    <header>
+        <div class="site-title">
+            <h1>若狭県 防災・安全情報ネットワーク「S.H.I.N.WA」</h1>
+            <p>Safety & Hazard Information Network of Wakasa</p>
+        </div>
+        <div class="clock-box">
+            現在日時: <span id="current-clock">----年--月--日 --:--:--</span>
         </div>
     </header>
 
-    <div id="utility-bar">
-        <div class="utility-inner">
-            <div class="accessibility">
-                <span>【文字サイズ】</span>
-                <button class="font-size-btn" data-size="small">小</button>
-                <button class="font-size-btn active" data-size="medium">中</button>
-                <button class="font-size-btn" data-size="large">大</button>
-            </div>
-            <div class="language">
-                <a href="#">English</a> | <a href="#">中文</a>
-            </div>
-        </div>
+
+    <!-- 緊急お知らせ（注意報・警報の発令等） -->
+    <div class="alert-banner">
+        <span class="alert-icon"><!--【注意】--></span>
+        <span id="alert-message">現在、若狭県内に特別警報・重大な緊急災害情報は発表されていません。</span>
     </div>
 
-    <main id="main-content">
-        <div class="container">
+    <div class="main-content">
+        <!-- メインコンテンツエリア -->
+        <main class="primary">
             
-            <section class="alert-section">
-                <h2>⚠️ 緊急・重要なお知らせ</h2>
-                <p class="current-time"></p> 
-                <div class="alert-box primary-alert">
-                    <p class="alert-title">【現在、避難情報の発令はありません】</p>
-                    <p>若狭県北部：強風注意報・波浪注意報発令中。</p>
-                    <p>若狭県南部：発表なし。</p>
-                    <a href="#" class="btn-detail">▶ 全ての警報・注意報を確認する</a>
+            <!-- 気象警報・注意報発表状況 -->
+<section class="box">
+    <h2 class="box-title">県内の気象警報・注意報発表状況</h2>
+    <div class="box-body">
+        <table class="status-table">
+            <tbody id="weather-status-body">
+                <tr>
+                    <td colspan="2" style="text-align: center; padding: 15px;">気象情報を取得中...</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="update-info">
+            最終情報更新日時: <span id="status-update-time">--年--月--日 --時--分</span>
+            <button type="button" id="btn-refresh" class="btn-sub">最新情報に更新</button>
+        </div>
+    </div>
+</section>
+
+            <!-- 新着・緊急情報一覧 -->
+            <section class="box">
+                <h2 class="box-title">安全情報</h2>
+                <div class="box-body">
+                    <ul class="news-list">
+                        <li class="news-item">
+                            <div class="news-summary">
+                                <span class="date">［日時］2026年7月12日1時29分頃</span>
+                                <span class="date">［場所］若狭県沖</span>
+                                <button type="button" class="news-toggle" aria-expanded="false" onclick="var full = this.parentElement.nextElementSibling; full.hidden = !full.hidden; this.setAttribute('aria-expanded', String(!full.hidden));">
+                                    若狭県沖にて最大震度４の地震が発生しました。
+                                </button>
+                            </div>
+                            <div class="news-full" hidden>
+                                若狭県沖にて最大震度４の地震が発生しました。<br>
+                                ［震度］震度４を記録した地域…香津村、渡町、早手川町、汐崖町、伊舟市、矢坂町、物部市西部
+                                震度３を記録した地域…物部市東部、若狭市北部、甲日市北部、江崎市、葉ヶ山町
+                                ［津波］この地震により若干の海面変動があるかもしれませんが、被害の心配はありません。<br><br>
+                                大きな地震はいつ発生するか分かりません。
+                                日頃から備えていきましょう。<br>
+                                〘若狭県安全局〙
+                            </div>
+                        </li>
+
+                        <li class="news-item">
+                            <div class="news-summary">
+                                <span class="date">［日時］2026年7月1日17時過ぎ</span>
+                                <span class="date">［場所］―</span>
+                                <button type="button" class="news-toggle" aria-expanded="false" onclick="var full = this.parentElement.nextElementSibling; full.hidden = !full.hidden; this.setAttribute('aria-expanded', String(!full.hidden));">
+                                    S.H.I.N.WA.を名乗る偽メールが送信される事案が発生
+                                </button>
+                            </div>
+                            <div class="news-full" hidden>
+                                ［犯人・不審者像］
+年齢…―<br>
+人数…―<br>
+身長…―<br>
+体格…―<br>
+服装…―<br>
+<br>
+なりすましメール等にはご注意ください。<br>
+また、このような事案が発生するのは極めて遺憾であり、刑事・民事の両面で関係機関と協議してまいります。<br>
+<br>
+〘S.H.I.N.WA.統括センター・若狭県警察・若狭県安全局・危機管理センター〙
+                            </div>
+                        </li>
+
+                    </ul>
                 </div>
             </section>
 
-            <section class="tabbed-category-section">
-                <h2>■ 分野別お知らせ一覧</h2>
-
-                <div class="tab-list">
-                    <button class="tab-btn active" data-category="weather">気象・災害</button>
-                    <button class="tab-btn" data-category="security">防犯・交通</button>
-                    <button class="tab-btn" data-category="utility">ライフライン・医療</button>
-                </div>
-
-                <div class="tab-content-container">
-                    <div id="weather-content" class="tab-content active">
-                        <p class="tab-description">現在、若狭県内で発表されている気象情報、および災害に関する最新情報をお伝えします。</p>
-                        <p style="color: brown;">※現在最大震度3程度の地震が県内において多発しております。今後の情報に注意してください。</p>
-                        <ul class="announcement-list">
-                            <a class="a-a" href="./earthquake.html">
-                            <li><span class="date">12/10 18:23</span> 【お詫び】災害メールの誤植について</li>
-                            <li><span class="date">12/12 17:59</span> 【地震】若狭県沖にて最大震度3の地震が発生しました。津波の心配はありません。</li>
-                            <li><span class="date">11/25 16:12</span> 【地震】若狭県沖にて最大震度2の地震が発生しました。津波の心配はありません。</li>
-                        </a>
-                        </ul>
-                        <a href="./earthquake.html" class="btn-full-list"><img src="./image/right2.png" width="11px" alt="▶"> 気象・災害情報の一覧を見る</a>
-                    </div>
-
-                    <div id="security-content" class="tab-content">
-                        <p class="tab-description">県警本部・交通管制センターからの防犯情報、および交通規制情報です。</p>
-                        <ul class="announcement-list">
-                            <li><span class="date">12/12 16:30</span> 【防犯】還付金詐欺のアポ電が多発しています。十分にご注意ください。</li>
-                            <li><span class="date">12/11 11:00</span> 【交通】県道51号線で積雪による一部通行止めが発生しています。</li>
-                            <li><span class="date">12/05 09:30</span> 【鳥獣】若狭町でクマの目撃情報が続いています。</li>
-                        </ul>
-                        <a href="#" class="btn-full-list"><img src="./image/right2.png" width="11px" alt="▶"> 防犯・交通情報の一覧を見る</a>
-                    </div>
-
-                    <div id="utility-content" class="tab-content">
-                        <p class="tab-description">停電、断水、公共交通機関の運行状況、休日夜間当番医の情報です。</p>
-                        <ul class="announcement-list">
-                            <li><span class="date">12/12 17:00</span> 【医療】本日（12/12）の夜間当番医は県立若狭病院です。</li>
-                            <li><span class="date">12/01 10:00</span> 【水道】冬期の水道管凍結防止に関するお知らせ。</li>
-                            <li><span class="date">11/20 07:30</span> 【交通】JR若狭線は平常通り運行しています。</li>
-                        </ul>
-                        <a href="#" class="btn-full-list"><img src="./image/right2.png" width="11px" alt="▶"> ライフライン・医療情報の一覧を見る</a>
-                    </div>
+            <!-- 業務インフォメーション -->
+            <section class="box">
+                <h2 class="box-title">S.H.I.N.WA（シンワ）システムについて</h2>
+                <div class="box-body system-desc">
+                    <p>S.H.I.N.WA（Safety & Hazard Information Network of Wakasa）は、若狭県内の気象情報、不審者・事件情報、土砂災害警戒情報などの防災情報を一元的に県民の皆様へ迅速に伝達する公的情報基盤システムです。</p>
                 </div>
             </section>
+
+        </main>
+
+        <!-- サイドバー -->
+        <aside class="sidebar">
             
-            <section class="register-section">
-                <h2>📩 若狭県防災メール・LINE 公式アカウント</h2>
-                <div class="register-box">
-                    <p>緊急速報や地域ごとの安全情報を、登録いただいたツールへ配信します。</p>
-                    <div class="register-buttons">
-                        <a href="#" class="btn-large btn-email">メールで登録</a>
-                        <a href="#" class="btn-large btn-line">LINEで友だち登録</a>
-                    </div>
+            
+            <div class="box">
+                <h3 class="box-title">お問い合わせ</h3>
+                <div class="box-body contact-box">
+                    <p><strong></strong></p>
+                    <p>S.H.I.N.WA統括センター 広報WAKASA</p>
+                    <p>MAIL: shinwa.info1210@gmail.com</p>
                 </div>
-            </section>
+            </div>
 
-            <section class="link-section">
-                <h2>🔗 関連リンク</h2>
-                <ul class="link-list">
-                    <li><a href="#">若狭県庁トップページ</a></li>
-                    <li><a href="#">気象庁・国土交通省</a></li>
-                    <li><a href="#">若狭県警察本部</a></li>
-                    <li><a href="#">県民生活相談窓口</a></li>
-                </ul>
-            </section>
+        </aside>
+    </div>
 
-        </div>
-    </main>
-
-    <footer id="footer">
-        <div class="container">
-            <address>
-                <strong>若狭県 危機管理部 総合保安課</strong><br>
-                〒8901-0003 若狭県若狭市若狭区本町2-6-1 / 電話：0771-2029-0042
-            </address>
-            <p class="copyright">
-                (C) Wakasa Prefecture. All Rights Reserved.
-            </p>
-        </div>
+    <!-- フッター -->
+    <footer>
+        <p>若狭県 S.H.I.N.WA.統括センター (旧S.H.I.N.WA.情報部)</p>
+        <p>〒8901-0003 若狭県若狭市若狭区本町2-6-1 </p>
+        <p class="copyright">Copyright © Wakasa Prefecture. All Rights Reserved.</p>
     </footer>
+</div>
 
-    <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

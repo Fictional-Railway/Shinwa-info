@@ -1,190 +1,233 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const body = document.body;
-    const sizeButtons = document.querySelectorAll('.font-size-btn');
-    const FONT_SIZE_KEY = 'wakasa_font_size';
-    
-    // ----------------------------------------------------
-    // 【1】リアルタイム時刻更新機能
-    // ----------------------------------------------------
-    const timeElement = document.querySelector('.current-time');
+/**
+ * 若狭県防災・安全情報システム「S.H.I.N.WA」 JavaScript
+ */
 
-    function updateTime() {
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // 1. リアルタイム時計機能
+    function updateClock() {
         const now = new Date();
         const year = now.getFullYear();
         const month = String(now.getMonth() + 1).padStart(2, '0');
-        const day = String(now.getDate()).padStart(2, '0');
+        const date = String(now.getDate()).padStart(2, '0');
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
 
-        const timeString = `${year}年${month}月${day}日 ${hours}:${minutes} 現在`;
-
-        if (timeElement) {
-            timeElement.textContent = timeString;
+        const clockElem = document.getElementById('current-clock');
+        if (clockElem) {
+            clockElem.textContent = `${year}年${month}月${date}日 ${hours}:${minutes}:${seconds}`;
         }
     }
-
-    updateTime();
-    setInterval(updateTime, 60000); // 1分ごとに更新
-
-    // ----------------------------------------------------
-    // 【2】タブ切り替え機能
-    // ----------------------------------------------------
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    const tabContents = document.querySelectorAll('.tab-content');
-
-    tabButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const category = this.getAttribute('data-category');
-            
-            // 1. すべてのタブボタンから active クラスを削除し、クリックされたボタンに付与
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-
-            // 2. すべてのコンテンツを非表示にし、対応するコンテンツを表示
-            tabContents.forEach(content => {
-                content.classList.remove('active');
-            });
-            const targetContent = document.getElementById(category + '-content');
-            if (targetContent) {
-                targetContent.classList.add('active');
-            }
-        });
-    });
-
-    // ----------------------------------------------------
-    // 【3】文字サイズ変更機能
-    // ----------------------------------------------------
     
-    const savedSize = localStorage.getItem(FONT_SIZE_KEY) || 'medium';
-    setFontSize(savedSize);
+    // 1秒ごとに更新
+    setInterval(updateClock, 1000);
+    updateClock();
 
+    // 2. アクセシビリティパネル開閉
+    const btnAccessibility = document.getElementById('btn-accessibility');
+    const panel = document.getElementById('accessibility-panel');
+
+    if (btnAccessibility && panel) {
+        btnAccessibility.addEventListener('click', function(e) {
+            e.preventDefault();
+            panel.classList.toggle('style-hidden');
+        });
+    }
+
+    // 3. 文字サイズ変更処理
+    const sizeButtons = document.querySelectorAll('.btn-size');
     sizeButtons.forEach(button => {
         button.addEventListener('click', function() {
-            const newSize = this.getAttribute('data-size');
-            setFontSize(newSize);
+            sizeButtons.forEach(btn => btn.classList.remove('btn-active'));
+            this.classList.add('btn-active');
+
+            const size = this.getAttribute('data-size');
+            document.body.classList.remove('size-small', 'size-medium', 'size-large');
+            document.body.classList.add(`size-${size}`);
         });
     });
 
-    function setFontSize(size) {
-        body.classList.remove('font-small', 'font-medium', 'font-large');
-        if (size === 'small') {
-            body.classList.add('font-small');
-        } else if (size === 'large') {
-            body.classList.add('font-large');
-        } else {
-            body.classList.add('font-medium'); 
-        }
+    // 4. 配色変更（高コントラスト切り替え）
+    const colorButtons = document.querySelectorAll('.btn-color');
+    colorButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            colorButtons.forEach(btn => btn.classList.remove('btn-active'));
+            this.classList.add('btn-active');
 
-        sizeButtons.forEach(btn => {
-            btn.classList.remove('active');
-            if (btn.getAttribute('data-size') === size) {
-                btn.classList.add('active');
+            const color = this.getAttribute('data-color');
+            if (color === 'high-contrast') {
+                document.body.classList.add('high-contrast');
+            } else {
+                document.body.classList.remove('high-contrast');
             }
         });
+    });
 
-        localStorage.setItem(FONT_SIZE_KEY, size);
+    // 5. 最新情報更新ボタンの擬似処理
+    const btnRefresh = document.getElementById('btn-refresh');
+    const statusUpdateTime = document.getElementById('status-update-time');
+
+    if (btnRefresh && statusUpdateTime) {
+        btnRefresh.addEventListener('click', function() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const date = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            
+            statusUpdateTime.textContent = `${year}年${month}月${date}日 ${hours}時${minutes}分`;
+            alert('最新の情報に更新しました。');
+        });
     }
-    // ----------------------------------------------------
+
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-    const body = document.body;
-    const sizeButtons = document.querySelectorAll('.font-size-btn');
-    const FONT_SIZE_KEY = 'wakasa_font_size';
     
-    // ----------------------------------------------------
-    // 【1】リアルタイム時刻更新機能
-    // ----------------------------------------------------
-    const timeElement = document.querySelector('.current-time');
+    // --- (1〜4の既存コードはそのまま) ---
 
-    function updateTime() {
-        // 現在の時刻を取得・整形する処理 (省略)
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const day = String(now.getDate()).padStart(2, '0');
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
+    // 5. 気象庁APIから福井県嶺南（若狭地域）の実データを取得する処理
+    const REINAN_AREA_CODE = "180020"; // 気象庁エリアコード：福井県嶺南（若狭）
 
-        // 現在の時刻に合わせる
-        const timeString = `${year}年${month}月${day}日 ${hours}:${minutes} 現在`;
+    async function fetchReinanWeatherWarnings() {
+        const statusBody = document.getElementById('weather-status-body');
+        const updateTimeElem = document.getElementById('status-update-time');
 
-        if (timeElement) {
-            timeElement.textContent = timeString;
-        }
-    }
+        if (!statusBody) return;
 
-    updateTime();
-    // 1分ごとに更新
-    setInterval(updateTime, 60000); 
-
-    // ----------------------------------------------------
-    // 【2】タブ切り替え機能
-    // ----------------------------------------------------
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    const tabContents = document.querySelectorAll('.tab-content');
-
-    tabButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const category = this.getAttribute('data-category');
+        try {
+            // 気象庁 防災情報XML/JSON API（防災警報・注意報データ）
+            const response = await fetch('https://www.jma.go.jp/bosai/warning/data/warning/180000.json');
             
-            // 1. ボタンのアクティブ状態を切り替え
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-
-            // 2. コンテンツの表示/非表示を切り替え
-            tabContents.forEach(content => {
-                content.classList.remove('active');
-            });
-            const targetContent = document.getElementById(category + '-content');
-            if (targetContent) {
-                targetContent.classList.add('active');
+            if (!response.ok) {
+                throw new Error('気象データの取得に失敗しました');
             }
-        });
-    });
 
-    // ----------------------------------------------------
-    // 【3】文字サイズ変更機能 (コア部分)
-    // ----------------------------------------------------
-    
-    // ページロード時: 保存されたサイズを適用
-    const savedSize = localStorage.getItem(FONT_SIZE_KEY) || 'medium';
-    setFontSize(savedSize);
+            const data = await response.json();
 
-    // ボタンクリック時: サイズを変更
-    sizeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const newSize = this.getAttribute('data-size');
-            setFontSize(newSize);
-        });
-    });
+            // 福井県嶺南（若狭）エリアのデータ抽出
+            let reinanData = null;
+            if (data && data.areaTypes) {
+                for (const areaType of data.areaTypes) {
+                    if (areaType.areas) {
+                        const found = areaType.areas.find(a => a.code === REINAN_AREA_CODE);
+                        if (found) {
+                            reinanData = found;
+                            break;
+                        }
+                    }
+                }
+            }
 
-    /**
-     * 文字サイズを変更し、LocalStorageに保存する関数
-     * @param {string} size - 'small', 'medium', 'large' のいずれか
-     */
-    function setFontSize(size) {
-        // 1. body要素のクラスを操作して、CSSで定義されたサイズを適用
-        body.classList.remove('font-small', 'font-medium', 'font-large');
-        if (size === 'small') {
-            body.classList.add('font-small');
-        } else if (size === 'large') {
-            body.classList.add('font-large');
-        } else {
-            // 'medium'がデフォルトサイズ
-            body.classList.add('font-medium'); 
+            // 発表されている警報・注意報コードの配列を取得
+            const warningCodes = reinanData && reinanData.warnings 
+                ? reinanData.warnings.map(w => w.code) 
+                : [];
+
+            // 気象庁警報・注意報コードの判定ロジック
+            const specialWarnings = []; // 特別警報 (30番台など)
+            const warnings = [];        // 警報 (10番台)
+            const advisories = [];      // 注意報 (20番台)
+            let hasLandslideAlert = false; // 土砂災害警戒情報
+
+            if (reinanData && reinanData.warnings) {
+                reinanData.warnings.forEach(w => {
+                    // statusが "発表" または "継続" のもののみ対象
+                    if (w.status === "発表" || w.status === "継続") {
+                        const code = parseInt(w.code, 10);
+                        const name = getWarningName(code);
+
+                        if (code === 50) { // 土砂災害警戒情報
+                            hasLandslideAlert = true;
+                        } else if (code >= 30 && code < 40) {
+                            specialWarnings.push(name);
+                        } else if (code >= 10 && code < 20) {
+                            warnings.push(name);
+                        } else if (code >= 20 && code < 30) {
+                            advisories.push(name);
+                        }
+                    }
+                });
+            }
+
+            // HTMLテーブル生成
+            statusBody.innerHTML = `
+                <tr>
+                    <th>特別警報</th>
+                    <td>${formatStatusList(specialWarnings, 'danger')}</td>
+                </tr>
+                <tr>
+                    <th>警報</th>
+                    <td>${formatStatusList(warnings, 'warning')}</td>
+                </tr>
+                <tr>
+                    <th>注意報</th>
+                    <td>${formatStatusList(advisories, 'info')}</td>
+                </tr>
+                <tr>
+                    <th>土砂災害警戒情報</th>
+                    <td>${hasLandslideAlert 
+                        ? '<span class="status-warning">発表中</span>' 
+                        : '<span class="status-none">発表なし</span>'}</td>
+                </tr>
+            `;
+
+            // 発表日時の反映
+            if (data.reportDatetime && updateTimeElem) {
+                const reportDate = new Date(data.reportDatetime);
+                const year = reportDate.getFullYear();
+                const month = String(reportDate.getMonth() + 1).padStart(2, '0');
+                const date = String(reportDate.getDate()).padStart(2, '0');
+                const hours = String(reportDate.getHours()).padStart(2, '0');
+                const minutes = String(reportDate.getMinutes()).padStart(2, '0');
+                
+                updateTimeElem.textContent = `${year}年${month}月${date}日 ${hours}時${minutes}分`;
+            }
+
+        } catch (error) {
+            console.error('Weather API Error:', error);
+            statusBody.innerHTML = `
+                <tr>
+                    <td colspan="2" style="color: red; text-align: center;">
+                        気象情報の取得に失敗しました。（${error.message}）
+                    </td>
+                </tr>
+            `;
         }
-
-        // 2. ユーティリティバーのボタンのアクティブ状態を切り替える
-        sizeButtons.forEach(btn => {
-            btn.classList.remove('active');
-            if (btn.getAttribute('data-size') === size) {
-                btn.classList.add('active');
-            }
-        });
-
-        // 3. 次回アクセス時のためにLocalStorageに保存
-        localStorage.setItem(FONT_SIZE_KEY, size);
     }
-    // ----------------------------------------------------
+
+    // 警報名フォーマット用関数
+    function formatStatusList(list, type) {
+        if (!list || list.length === 0) {
+            return '<span class="status-none">発表なし</span>';
+        }
+        const className = type === 'danger' || type === 'warning' ? 'status-warning' : 'status-info';
+        return list.map(name => `<span class="${className}">${name}</span>`).join('、 ');
+    }
+
+    // 気象庁 警報・注意報コードテーブル（代表的なもの）
+    function getWarningName(code) {
+        const names = {
+            10: '大雨警報', 12: '大雪警報', 13: '暴風警報', 14: '暴風雪警報', 15: '波浪警報', 16: '高潮警報', 17: '洪水警報',
+            20: '大雨注意報', 21: '大雪注意報', 22: '強風注意報', 23: '風雪注意報', 24: '波浪注意報', 25: '高潮注意報',
+            26: '融雪注意報', 27: '洪水注意報', 28: '乾燥注意報', 29: '濃霧注意報', 30: '着氷注意報', 31: '着雪注意報', 32: '雪崩注意報', 33: '雷注意報',
+            35: '大雨特別警報', 36: '大雪特別警報', 37: '暴風特別警報', 38: '暴風雪特別警報', 39: '波浪特別警報', 40: '高潮特別警報'
+        };
+        return names[code] || `警報/注意報(${code})`;
+    }
+
+    // 初期呼び出し
+    fetchReinanWeatherWarnings();
+
+    // 更新ボタンイベント
+    const btnRefresh = document.getElementById('btn-refresh');
+    if (btnRefresh) {
+        btnRefresh.addEventListener('click', function() {
+            fetchReinanWeatherWarnings();
+            alert('気象情報を最新状態に更新しました。');
+        });
+    }
+
 });
