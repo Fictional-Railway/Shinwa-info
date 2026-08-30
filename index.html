@@ -50,6 +50,20 @@
         .news-item.news-page-hidden {
             display: none !important;
         }
+
+        .alert-banner {
+            background: #e8f4ff;
+            color: #123b5c;
+            border-left: 6px solid #4a90e2;
+            transition: all 0.25s ease;
+        }
+
+        .alert-banner.alert-severe {
+            background: #fff1f1;
+            color: #8a1c1c;
+            border-left-color: #d93025;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
@@ -310,6 +324,8 @@ async function getRegionWeather(region) {
 async function updateWeatherStatus() {
     const tbody = document.getElementById("weather-status-body");
     const updateInfo = document.querySelector(".update-info");
+    const alertBanner = document.querySelector(".alert-banner");
+    const alertMessage = document.getElementById("alert-message");
 
     tbody.innerHTML = `
         <tr>
@@ -355,6 +371,22 @@ async function updateWeatherStatus() {
             <td>${advisoryHTML(south)}</td>
         </tr>
     `;
+
+    const severeItems = [
+        ...north.warnings,
+        ...north.advisories,
+        ...south.warnings,
+        ...south.advisories
+    ].filter(item => item.level >= 3);
+
+    if (severeItems.length > 0) {
+        const highest = severeItems.reduce((max, item) => (item.level > max.level ? item : max), severeItems[0]);
+        alertBanner.classList.add("alert-severe");
+        alertMessage.textContent = `警戒レベル${highest.level}以上の警報・注意報が発表されています。避難・安全確保に十分ご注意ください。`;
+    } else {
+        alertBanner.classList.remove("alert-severe");
+        alertMessage.textContent = "現在、若狭県内に特別警報・重大な緊急災害情報は発表されていません。";
+    }
 
     const now = new Date();
     updateInfo.textContent = `最新の情報を取得しました。取得時刻：${now.toLocaleString("ja-JP")}`;
