@@ -480,3 +480,39 @@ footer .copyright {
         padding: 12px 8px;
     }
 }
+
+
+/* レベル別表示バッジのCSS */
+.status-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 13px;
+    font-weight: bold;
+    margin: 2px 3px 2px 0;
+    line-height: 1.4;
+}
+
+/* レベル5：特別警報（黒文字×紫背景 または 黒背景×紫文字） */
+.level-5 {
+    background-color: #6f42c1;
+    color: #ffffff !important;
+}
+
+/* レベル3〜4：警報（赤色） */
+.level-3-4 {
+    background-color: #dc3545;
+    color: #ffffff !important;
+}
+
+/* レベル2：注意報（黄色・黒文字で視認性確保） */
+.level-2 {
+    background-color: #ffc107;
+    color: #212529 !important;
+}
+
+/* レベル1：発表なし・平常（緑色） */
+.level-none {
+    color: #28a745;
+    font-weight: bold;
+}

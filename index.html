@@ -109,6 +109,73 @@
     </div>
 </section>
 
+<!-- 気象警報・注意報発表状況 -->
+<style>
+    /* 警報・注意報のバッジスタイル */
+    .warning-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        margin: 2px 0;
+        border-radius: 4px;
+        font-size: 0.9em;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    /* 気象庁の警戒レベル配色基準に準拠 */
+    .level-5 { 
+        background-color: #000000; /* 黒（特別警報） */
+    }
+    .level-4 { 
+        background-color: #800080; /* 紫（危険警報） */
+    }
+    .level-3 { 
+        background-color: #ff2800; /* 赤（警報） */
+    }
+    .level-2 { 
+        background-color: #f2e700; /* 黄（注意報） */
+        color: #333; /* 背景が明るいため文字色は暗く */
+    }
+
+    .weather-error { color: #d32f2f; font-weight: bold; }
+    .no-warning { color: #757575; }
+    
+    /* テーブル全体の基本スタイル（必要に応じて調整してください） */
+    .status-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .status-table th, .status-table td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: center;
+        vertical-align: middle;
+    }
+</style>
+
+<section class="box">
+    <h2 class="box-title">県内の気象警報・注意報発表状況</h2>
+    <div class="box-body">
+        <table class="status-table">
+            <thead>
+                <tr>
+                    <th style="width: 33%;">区分</th>
+                    <th style="width: 33%;">県北</th>
+                    <th style="width: 33%;">県南</th>
+                </tr>
+            </thead>
+            <tbody id="weather-status-body">
+                <tr>
+                    <td colspan="3" style="text-align: center; padding: 15px;">気象情報を取得中...</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="update-info" style="margin-top: 10px; font-size: 0.9em; text-align: right;">
+            最新の情報を取得しました。
+        </div>
+    </div>
+</section>
+
 <script>
 /*
  * ==========================================
@@ -119,357 +186,192 @@
  * ==========================================
  */
 
-// 気象庁の都道府県単位データ
 const WEATHER_API = {
-    north: {
-        name: "越前町",
-        officeCode: "180000",
-        areaCode: "1842300" // 越前町
-    },
-
-    south: {
-        name: "舞鶴市",
-        officeCode: "260000",
-        areaCode: "2620200" // 舞鶴市
-    }
+    north: { name: "越前町", officeCode: "180000", areaCode: "1842300" },
+    south: { name: "舞鶴市", officeCode: "260000", areaCode: "2620200" }
 };
 
-
-// 警報・注意報コード
-// 2026年5月29日以降の「令和8年体系」
+// 警報・注意報コード（レベル情報を追加）
 const WARNING_NAMES = {
-    "33": { name: "レベル5大雨特別警報", type: "warning" },
-    "43": { name: "レベル4大雨危険警報", type: "warning" },
-    "03": { name: "レベル3大雨警報", type: "warning" },
-    "10": { name: "レベル2大雨注意報", type: "advisory" },
+    "33": { name: "レベル5大雨特別警報", type: "warning", level: 5 },
+    "43": { name: "レベル4大雨危険警報", type: "warning", level: 4 },
+    "03": { name: "レベル3大雨警報", type: "warning", level: 3 },
+    "10": { name: "レベル2大雨注意報", type: "advisory", level: 2 },
 
-    "39": { name: "レベル5土砂災害特別警報", type: "warning" },
-    "49": { name: "レベル4土砂災害危険警報", type: "warning" },
-    "09": { name: "レベル3土砂災害警報", type: "warning" },
-    "29": { name: "レベル2土砂災害注意報", type: "advisory" },
+    "39": { name: "レベル5土砂災害特別警報", type: "warning", level: 5 },
+    "49": { name: "レベル4土砂災害危険警報", type: "warning", level: 4 },
+    "09": { name: "レベル3土砂災害警報", type: "warning", level: 3 },
+    "29": { name: "レベル2土砂災害注意報", type: "advisory", level: 2 },
 
-    "38": { name: "レベル5高潮特別警報", type: "warning" },
-    "48": { name: "レベル4高潮危険警報", type: "warning" },
-    "08": { name: "レベル3高潮警報", type: "warning" },
-    "19": { name: "レベル2高潮注意報", type: "advisory" },
+    "38": { name: "レベル5高潮特別警報", type: "warning", level: 5 },
+    "48": { name: "レベル4高潮危険警報", type: "warning", level: 4 },
+    "08": { name: "レベル3高潮警報", type: "warning", level: 3 },
+    "19": { name: "レベル2高潮注意報", type: "advisory", level: 2 },
 
-    "32": { name: "暴風雪特別警報", type: "warning" },
-    "02": { name: "暴風雪警報", type: "warning" },
-    "13": { name: "風雪注意報", type: "advisory" },
+    "32": { name: "暴風雪特別警報", type: "warning", level: 5 },
+    "02": { name: "暴風雪警報", type: "warning", level: 3 },
+    "13": { name: "風雪注意報", type: "advisory", level: 2 },
 
-    "35": { name: "暴風特別警報", type: "warning" },
-    "05": { name: "暴風警報", type: "warning" },
-    "15": { name: "強風注意報", type: "advisory" },
+    "35": { name: "暴風特別警報", type: "warning", level: 5 },
+    "05": { name: "暴風警報", type: "warning", level: 3 },
+    "15": { name: "強風注意報", type: "advisory", level: 2 },
 
-    "36": { name: "大雪特別警報", type: "warning" },
-    "06": { name: "大雪警報", type: "warning" },
-    "12": { name: "大雪注意報", type: "advisory" },
+    "36": { name: "大雪特別警報", type: "warning", level: 5 },
+    "06": { name: "大雪警報", type: "warning", level: 3 },
+    "12": { name: "大雪注意報", type: "advisory", level: 2 },
 
-    "37": { name: "波浪特別警報", type: "warning" },
-    "07": { name: "波浪警報", type: "warning" },
-    "16": { name: "波浪注意報", type: "advisory" },
+    "37": { name: "波浪特別警報", type: "warning", level: 5 },
+    "07": { name: "波浪警報", type: "warning", level: 3 },
+    "16": { name: "波浪注意報", type: "advisory", level: 2 },
 
-    "14": { name: "雷注意報", type: "advisory" },
-    "17": { name: "融雪注意報", type: "advisory" },
-    "20": { name: "濃霧注意報", type: "advisory" },
-    "21": { name: "乾燥注意報", type: "advisory" },
-    "22": { name: "なだれ注意報", type: "advisory" },
-    "23": { name: "低温注意報", type: "advisory" },
-    "24": { name: "霜注意報", type: "advisory" },
-    "25": { name: "着氷注意報", type: "advisory" },
-    "26": { name: "着雪注意報", type: "advisory" },
-    "27": { name: "その他の注意報", type: "advisory" }
+    "14": { name: "雷注意報", type: "advisory", level: 2 },
+    "17": { name: "融雪注意報", type: "advisory", level: 2 },
+    "20": { name: "濃霧注意報", type: "advisory", level: 2 },
+    "21": { name: "乾燥注意報", type: "advisory", level: 2 },
+    "22": { name: "なだれ注意報", type: "advisory", level: 2 },
+    "23": { name: "低温注意報", type: "advisory", level: 2 },
+    "24": { name: "霜注意報", type: "advisory", level: 2 },
+    "25": { name: "着氷注意報", type: "advisory", level: 2 },
+    "26": { name: "着雪注意報", type: "advisory", level: 2 },
+    "27": { name: "その他の注意報", type: "advisory", level: 2 }
 };
-
 
 /*
  * 気象庁APIから取得
  */
 async function fetchWeatherData(officeCode) {
-
-    const url =
-        `https://www.jma.go.jp/bosai/warning/data/r8/${officeCode}.json`;
-
-    const response = await fetch(url, {
-        cache: "no-store"
-    });
-
-    if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-    }
-
+    const url = `https://www.jma.go.jp/bosai/warning/data/r8/${officeCode}.json`;
+    const response = await fetch(url, { cache: "no-store" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
     return await response.json();
 }
 
-
 /*
- * オブジェクトの中から
- *
- * areaCode
- * kinds
- *
- * を持っているデータを探す
- *
- * APIの細かい構造変更にも比較的強い書き方
+ * 対象エリアの警報データを探索抽出
  */
 function findAreaWarnings(data, targetAreaCode) {
-
     const latest = {};
 
     function scan(obj) {
+        if (!obj || typeof obj !== "object") return;
 
-        if (!obj || typeof obj !== "object") {
-            return;
-        }
-
-        // 市町村等の警報データ
-        if (
-            obj.areaCode &&
-            String(obj.areaCode) === String(targetAreaCode) &&
-            Array.isArray(obj.kinds)
-        ) {
-
+        if (obj.areaCode && String(obj.areaCode) === String(targetAreaCode) && Array.isArray(obj.kinds)) {
             obj.kinds.forEach(kind => {
-
-                if (!kind.code) {
-                    return;
-                }
-
+                if (!kind.code) return;
                 latest[kind.code] = {
                     code: String(kind.code),
-                    status: kind.status || "",
-                    date: currentReportDate
+                    status: kind.status || ""
                 };
-
             });
         }
 
-        // 再帰的に探す
         if (Array.isArray(obj)) {
-
-            obj.forEach(item => {
-                scan(item);
-            });
-
+            obj.forEach(item => scan(item));
         } else {
-
             Object.keys(obj).forEach(key => {
-
-                // reportDatetimeなどは無視
-                if (
-                    key !== "areaCode" &&
-                    key !== "kinds"
-                ) {
+                if (key !== "areaCode" && key !== "kinds") {
                     scan(obj[key]);
                 }
-
             });
         }
     }
 
-
-    let currentReportDate = "";
-
-    // 最新の発表順に処理
     if (Array.isArray(data)) {
-
-        data.forEach(report => {
-
-            currentReportDate =
-                report.reportDatetime || "";
-
-            scan(report);
-
-        });
-
+        data.forEach(report => scan(report));
     } else {
-
-        currentReportDate =
-            data.reportDatetime || "";
-
         scan(data);
     }
-
 
     return Object.values(latest);
 }
 
-
 /*
- * 警報・注意報を分類
+ * 警報・注意報を分類し、色分け用のレベル情報も保持する
  */
 function classifyWarnings(items) {
-
-    const warnings = [];
-    const advisories = [];
+    const warningsMap = new Map();
+    const advisoriesMap = new Map();
 
     items.forEach(item => {
-
-        // 「解除」は表示しない
-        if (item.status === "解除") {
-            return;
-        }
-
+        if (item.status === "解除") return;
         const info = WARNING_NAMES[item.code];
+        if (!info) return;
 
-        if (!info) {
-            return;
-        }
-
+        // 重複を除外しながら Map に格納
         if (info.type === "warning") {
-
-            warnings.push(info.name);
-
+            if (!warningsMap.has(info.name)) warningsMap.set(info.name, info);
         } else {
-
-            advisories.push(info.name);
-
+            if (!advisoriesMap.has(info.name)) advisoriesMap.set(info.name, info);
         }
     });
 
-
     return {
-        warnings: [...new Set(warnings)],
-        advisories: [...new Set(advisories)]
+        warnings: Array.from(warningsMap.values()),
+        advisories: Array.from(advisoriesMap.values())
     };
 }
-
 
 /*
  * 1地域分を取得
  */
 async function getRegionWeather(region) {
-
     try {
+        const data = await fetchWeatherData(region.officeCode);
+        const items = findAreaWarnings(data, region.areaCode);
+        const result = classifyWarnings(items);
 
-        const data =
-            await fetchWeatherData(region.officeCode);
-
-        const items =
-            findAreaWarnings(
-                data,
-                region.areaCode
-            );
-
-        const result =
-            classifyWarnings(items);
-
-        return {
-            success: true,
-            name: region.name,
-            ...result
-        };
-
+        return { success: true, name: region.name, ...result };
     } catch (error) {
-
-        console.error(
-            `${region.name}の気象情報取得失敗`,
-            error
-        );
-
-        return {
-            success: false,
-            name: region.name,
-            warnings: [],
-            advisories: []
-        };
+        console.error(`${region.name}の気象情報取得失敗`, error);
+        return { success: false, name: region.name, warnings: [], advisories: [] };
     }
 }
-
 
 /*
  * HTMLを更新
  */
 async function updateWeatherStatus() {
-
-    const tbody =
-        document.getElementById(
-            "weather-status-body"
-        );
-
-    const updateInfo =
-        document.querySelector(
-            ".update-info"
-        );
-
+    const tbody = document.getElementById("weather-status-body");
+    const updateInfo = document.querySelector(".update-info");
 
     tbody.innerHTML = `
         <tr>
-            <td colspan="3"
-                style="text-align:center; padding:15px;">
-                気象情報を取得中...
-            </td>
+            <td colspan="3" style="text-align:center; padding:15px;">気象情報を取得中...</td>
         </tr>
     `;
 
-
-    // 越前町・舞鶴市を同時取得
-    const [
-        north,
-        south
-    ] = await Promise.all([
-
-        getRegionWeather(
-            WEATHER_API.north
-        ),
-
-        getRegionWeather(
-            WEATHER_API.south
-        )
-
+    const [north, south] = await Promise.all([
+        getRegionWeather(WEATHER_API.north),
+        getRegionWeather(WEATHER_API.south)
     ]);
 
-
     /*
-     * 表示用HTML
+     * 表示用HTML生成（レベルに応じてクラスを付与）
      */
     const warningHTML = (data) => {
-
-        if (!data.success) {
-            return `<span class="weather-error">
-                        情報取得失敗
-                    </span>`;
-        }
-
-        if (data.warnings.length === 0) {
-            return `<span class="no-warning">発表なし</span>`;
-        }
+        if (!data.success) return `<span class="weather-error">情報取得失敗</span>`;
+        if (data.warnings.length === 0) return `<span class="no-warning">発表なし</span>`;
 
         return data.warnings
-            .map(name =>
-                `<span class="warning">${name}</span>`
-            )
+            .map(info => `<span class="warning-badge level-${info.level}">${info.name}</span>`)
             .join("<br>");
     };
-
 
     const advisoryHTML = (data) => {
-
-        if (!data.success) {
-            return `<span class="weather-error">
-                        情報取得失敗
-                    </span>`;
-        }
-
-        if (data.advisories.length === 0) {
-            return `<span class="no-warning">発表なし</span>`;
-        }
+        if (!data.success) return `<span class="weather-error">情報取得失敗</span>`;
+        if (data.advisories.length === 0) return `<span class="no-warning">発表なし</span>`;
 
         return data.advisories
-            .map(name =>
-                `<span class="advisory">${name}</span>`
-            )
+            .map(info => `<span class="warning-badge level-${info.level}">${info.name}</span>`)
             .join("<br>");
     };
-
 
     tbody.innerHTML = `
         <tr>
-            <th>警報</th>
+            <th>警報・特別警報</th>
             <td>${warningHTML(north)}</td>
             <td>${warningHTML(south)}</td>
         </tr>
-
         <tr>
             <th>注意報</th>
             <td>${advisoryHTML(north)}</td>
@@ -477,32 +379,15 @@ async function updateWeatherStatus() {
         </tr>
     `;
 
-
     const now = new Date();
-
-    updateInfo.textContent =
-        `最新の情報を取得しました。取得時刻：${
-            now.toLocaleString("ja-JP")
-        }`;
+    updateInfo.textContent = `最新の情報を取得しました。取得時刻：${now.toLocaleString("ja-JP")}`;
 }
 
-
 /*
- * 初回
+ * 初期化＆定期更新
  */
-document.addEventListener(
-    "DOMContentLoaded",
-    updateWeatherStatus
-);
-
-
-/*
- * 10分ごとに更新
- */
-setInterval(
-    updateWeatherStatus,
-    10 * 60 * 1000
-);
+document.addEventListener("DOMContentLoaded", updateWeatherStatus);
+setInterval(updateWeatherStatus, 10 * 60 * 1000); // 10分
 </script>
 
 
