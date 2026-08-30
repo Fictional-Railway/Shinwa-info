@@ -109,6 +109,107 @@
     </div>
 </section>
 
+<script>
+const WEATHER_API = {
+    北: {
+        name: "越前町",
+        // 越前町の地域コード
+        code: "180010"
+    },
+    南: {
+        name: "舞鶴市",
+        // 舞鶴市の地域コード
+        code: "260010"
+    }
+};
+
+// 気象情報を取得
+async function fetchWeatherWarning(code) {
+    const url = `https://www.jma.go.jp/bosai/warning/data/warning/${code}.json`;
+
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("気象情報の取得に失敗:", error);
+        return null;
+    }
+}
+
+// 警報・注意報を表示用文字列に変換
+function getWarningText(data) {
+    if (!data || !data.areaTypes) {
+        return "情報取得失敗";
+    }
+
+    const warnings = [];
+
+    data.areaTypes.forEach(areaType => {
+        if (!areaType.areas) return;
+
+        areaType.areas.forEach(area => {
+            if (!area.warnings) return;
+
+            area.warnings.forEach(warning => {
+                if (warning.status !== "発表なし") {
+                    warnings.push(warning.name);
+                }
+            });
+        });
+    });
+
+    return warnings.length > 0
+        ? [...new Set(warnings)].join("、")
+        : "発表なし";
+}
+
+// テーブルを更新
+async function updateWeatherStatus() {
+    const tbody = document.getElementById("weather-status-body");
+
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="3" style="text-align:center; padding:15px;">
+                気象情報を取得中...
+            </td>
+        </tr>
+    `;
+
+    const [north, south] = await Promise.all([
+        fetchWeatherWarning(WEATHER_API.北.code),
+        fetchWeatherWarning(WEATHER_API.南.code)
+    ]);
+
+    tbody.innerHTML = `
+        <tr>
+            <th>警報</th>
+            <td>${getWarningText(north)}</td>
+            <td>${getWarningText(south)}</td>
+        </tr>
+        <tr>
+            <th>注意報</th>
+            <td>${getWarningText(north)}</td>
+            <td>${getWarningText(south)}</td>
+        </tr>
+    `;
+
+    document.querySelector(".update-info").textContent =
+        `最新の情報を取得しました。取得時刻：${new Date().toLocaleString("ja-JP")}`;
+}
+
+// ページ読み込み時に実行
+document.addEventListener("DOMContentLoaded", updateWeatherStatus);
+
+// 10分ごとに更新
+setInterval(updateWeatherStatus, 10 * 60 * 1000);
+</script>
+
+
             <!-- 新着・緊急情報一覧 -->
             <section class="box">
                 <h2 class="box-title">配信された情報一覧<span style="font-size: 10px;"> (タイトルをタップして開く)</span></h2>

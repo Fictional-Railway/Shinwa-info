@@ -84,6 +84,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
+/*
+ * 一時的に無効化中: 気象庁API連携の処理
+ * 後で再開する際はこのブロックのコメントアウトを解除してください。
+ */
+/*
 document.addEventListener('DOMContentLoaded', function() {
 
     // 気象庁エリアコード設定
@@ -241,3 +246,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 });
+*/
